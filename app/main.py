@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
 
 class IntegerRange:
@@ -6,10 +6,10 @@ class IntegerRange:
         self.min_amount = min_amount
         self.max_amount = max_amount
 
-    def __set_name__(self, owner: type, name: int | str) -> None:
+    def __set_name__(self, owner: type, name: str) -> None:
         self.private_name = "_" + name
 
-    def __get__(self, instance: object, owner: type) -> None:
+    def __get__(self, instance: object, owner: type) -> int:
         return getattr(instance, self.private_name)
 
     def __set__(self, instance: object, value: int) -> None:
@@ -39,17 +39,13 @@ class SlideLimitationValidator(ABC):
         self.weight = weight
         self.height = height
 
-    @abstractmethod
-    def validate(self, visitor: object) -> None:
-        pass
-
 
 class ChildrenSlideLimitationValidator(SlideLimitationValidator):
     age = IntegerRange(4, 14)
     height = IntegerRange(80, 120)
     weight = IntegerRange(20, 50)
 
-    def validate(self, visitor: int) -> None:
+    def validate(self, visitor: object) -> None:
         self.age = visitor.age
         self.height = visitor.height
         self.weight = visitor.weight
@@ -60,7 +56,7 @@ class AdultSlideLimitationValidator(SlideLimitationValidator):
     height = IntegerRange(120, 220)
     weight = IntegerRange(50, 120)
 
-    def validate(self, visitor: int) -> None:
+    def validate(self, visitor: object) -> None:
         self.age = visitor.age
         self.height = visitor.height
         self.weight = visitor.weight
